@@ -1,4 +1,41 @@
-﻿@page
-@model Gympt.Pages.Clients.EditClientModel
-@{
-}
+﻿@page "{id:int}"
+@model EditClientModel
+
+<h2>Editar Cliente</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Client.Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Client.Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Primer Apellido</label>
+        <input asp-for="Client.FirstLastname" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Segundo Apellido</label>
+        <input asp-for="Client.SecondLastname" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CI</label>
+        <input asp-for="Client.Ci" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha de Nacimiento</label>
+        <input asp-for="Client.DateBirth" type="date" class="form-control" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="Client.IsActive" class="form-check-input" />
+        <label class="form-check-label">Activo</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a class="btn btn-secondary" asp-page="/Clients/Clients">Cancelar</a>
+</form>

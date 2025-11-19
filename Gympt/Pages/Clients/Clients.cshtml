@@ -1,4 +1,42 @@
 ﻿@page
-@model Gympt.Pages.Clients.ClientsModel
+@model ClientsModel
 @{
+    ViewData["Title"] = "Clientes";
 }
+
+<h2>Lista de Clientes</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>CI</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model.Clients)
+        {
+            <tr>
+                <td>@client.Name</td>
+                <td>@client.FirstLastname</td>
+                <td>@client.SecondLastname</td>
+                <td>@client.Ci</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-page="/Clients/EditClient" asp-route-id="@client.Id">Editar</a>
+
+                    <!-- Botón Eliminar -->
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@client.Id" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">
+                            Eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-success" asp-page="/Clients/CreateClient">Nuevo Cliente</a>

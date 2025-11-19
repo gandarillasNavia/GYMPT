@@ -3,11 +3,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient<UserApiClient>(client =>
+
+builder.Services.AddHttpClient<ClientApiService>(client =>
 {
-    // ¡IMPORTANTE! Usa la URL correcta de tu MicroServiceUsers (mira en su launchSettings.json)
-    client.BaseAddress = new Uri("https://localhost:7299");
-});
+    client.BaseAddress = new Uri("http://localhost:5058"); // microservicio
+}); 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,7 +23,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+    
 app.UseAuthorization();
 
 app.MapRazorPages();
