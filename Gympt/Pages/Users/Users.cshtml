@@ -32,7 +32,7 @@
                     @foreach (var user in Model.UserList)
                     {
                         <tr>
-                            <td>@user.Name @user.FirstLastname</td>
+                            <td>@user.Name @user.FirstLastname @user.SecondLastname</td>
                             <td>@user.Email</td>
                             <td>
                                 @if (user.Role == "Admin")
