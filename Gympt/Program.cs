@@ -1,8 +1,13 @@
+using Gympt.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+builder.Services.AddHttpClient<UserApiClient>(client =>
+{
+    // ¡IMPORTANTE! Usa la URL correcta de tu MicroServiceUsers (mira en su launchSettings.json)
+    client.BaseAddress = new Uri("https://localhost:7299");
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
