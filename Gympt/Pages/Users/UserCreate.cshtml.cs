@@ -1,7 +1,10 @@
+// Ruta: Gympt/Pages/Users/UserCreateModel.cs
 using Gympt.DTO;
 using Gympt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http;
+using System.Text.Json; // Necesario para leer el JSON
 using System.Threading.Tasks;
 
 namespace Gympt.Pages.Users
@@ -10,32 +13,19 @@ namespace Gympt.Pages.Users
     {
         private readonly UserApiClient _userApiClient;
 
-        // [BindProperty] conecta esta propiedad con el formulario de la vista.
         [BindProperty]
-        public UserDTO User { get; set; } = new UserDTO(); // Inicializamos para evitar nulos
-
-        // La contraseña se maneja por separado para mayor claridad y seguridad.
-        [BindProperty]
-        public string Password { get; set; }
+        public UserDTO User { get;set; } = new UserDTO();
 
         public UserCreateModel(UserApiClient userApiClient)
         {
             _userApiClient = userApiClient;
         }
 
-        // El método OnGet es simple: solo muestra la página con el formulario vacío.
-        public void OnGet()
-        {
-        }
+        public void OnGet() { }
 
-        // Se ejecuta cuando se envía el formulario (POST).
         public async Task<IActionResult> OnPostAsync()
         {
-            // Asignamos la contraseña al DTO justo antes de validar y enviar.
-            // A futuro, aquí es donde se haría el hash.
-            User.Password = this.Password;
-
-            // Hacemos una validación manual básica antes de la del modelo.
+            // ... (Toda tu lógica de validación manual se queda igual) ...
             if (User.Role == "Instructor")
             {
                 if (!User.HireDate.HasValue)
@@ -46,22 +36,27 @@ namespace Gympt.Pages.Users
 
             if (!ModelState.IsValid)
             {
-                return Page(); // Vuelve a mostrar la página con los errores.
+                return Page();
             }
 
             try
             {
+                User.Password = "gympt" + User.Ci;
                 await _userApiClient.CreateUserAsync(User);
             }
-            catch (HttpRequestException ex)
+            catch (ApiException ex) // <-- AHORA ATRAPAMOS NUESTRA EXCEPCIÓN PERSONALIZADA
             {
-                ModelState.AddModelError(string.Empty, $"Ocurrió un error al crear el usuario: {ex.Message}");
+                // El mensaje de la excepción AHORA SÍ es el mensaje real de la API.
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+            catch (HttpRequestException ex) // Mantenemos un catch para errores de red
+            {
+                ModelState.AddModelError(string.Empty, $"Error de conexión: {ex.Message}");
                 return Page();
             }
 
-            // TempData se usa para mostrar un mensaje de éxito en la página siguiente.
             TempData["SuccessMessage"] = $"Usuario '{User.Name} {User.FirstLastname}' creado exitosamente.";
-
             return RedirectToPage("/Users/Users");
         }
     }

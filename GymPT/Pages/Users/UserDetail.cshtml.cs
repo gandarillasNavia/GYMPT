@@ -18,7 +18,7 @@ namespace GYMPT.Pages.Users
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            User = await _userApiClient.GetUserByIdAsync(id);
+            //User = await _userApiClient.GetUserByIdAsync(id);
 
             if (User == null)
             {

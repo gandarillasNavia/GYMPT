@@ -15,7 +15,7 @@
         // Campos de usuario
         public string Role { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; } // Más adelante será PasswordHash
+        public string? Password { get; set; } // Más adelante será PasswordHash
         public bool FisrtLogin { get; set; }
 
         // Campos de instructor (pueden ser nulos)
@@ -24,8 +24,8 @@
         public string? Specialization { get; set; }
 
         // Campos de auditoría
-        public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? LastModification { get; set; }
         public string? LastModifiedBy{get; set;}
     }

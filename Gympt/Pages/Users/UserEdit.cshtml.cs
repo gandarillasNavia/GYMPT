@@ -24,7 +24,7 @@ namespace GYMPT.Pages.Users
         // Su trabajo es obtener los datos del instructor y rellenar el formulario.
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Instructor = await _userApiClient.GetUserByIdAsync(id);
+            //Instructor = await _userApiClient.GetUserByIdAsync(id);
 
             // Verificación de seguridad importante:
             // 1. ¿Existe el usuario?
