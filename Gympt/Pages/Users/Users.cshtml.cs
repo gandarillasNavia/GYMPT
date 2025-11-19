@@ -1,12 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
+using Gympt.DTO;
+using Gympt.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Gympt.Pages.Users
+namespace GYMPT.Pages.Users
 {
     public class UsersModel : PageModel
     {
-        public void OnGet()
+        private readonly UserApiClient _userApiClient;
+        public IEnumerable<UserDTO> UserList { get; private set; }
+
+        public UsersModel(UserApiClient userApiClient)
         {
+            _userApiClient = userApiClient;
+        }
+
+        public async Task OnGetAsync()
+        {
+            UserList = await _userApiClient.GetAllUsersAsync();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            await _userApiClient.DeleteUserAsync(id);
+
+            return RedirectToPage();
         }
     }
 }

@@ -1,4 +1,138 @@
 ﻿@page
-@model Gympt.Pages.Users.UsersModel
+@model GYMPT.Pages.Users.UsersModel
 @{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p class="lead text-muted">Administra los instructores y administradores del sistema.</p>
+</div>
+
+<div class="d-flex justify-content-center my-4">
+    <a class="btn btn-primary shadow-sm" asp-page="/Users/UserCreate">
+        <i class="fas fa-user-plus"></i> Registrar Nuevo Usuario
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.UserList != null && Model.UserList.Any())
+                {
+                    @foreach (var user in Model.UserList)
+                    {
+                        <tr>
+                            <td>@user.Name @user.FirstLastname @user.SecondLastname</td>
+                            <td>@user.Email</td>
+                            <td>
+                                @if (user.Role == "Admin")
+                                {
+                                    <span class="badge bg-danger">Administrador</span>
+                                }
+                                else if (user.Role == "Instructor")
+                                {
+                                    <span class="badge bg-success">Instructor</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@user.Role</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <!-- El botón de Detalles siempre es visible -->
+                                    <a class="btn btn-sm btn-outline-info" title="Ver Detalles" asp-page="/Users/UserDetail" asp-route-id="@user.Id">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <!-- ****************************************************** -->
+                                    <!-- LÓGICA CONDICIONAL PARA EDITAR Y ELIMINAR             -->
+                                    <!-- Solo muestra estos botones si el rol es "Instructor" -->
+                                    <!-- ****************************************************** -->
+                                    @if (user.Role == "Instructor")
+                                    {
+                                        <a class="btn btn-sm btn-outline-warning" title="Editar" asp-page="/Users/UserEdit" asp-route-id="@user.Id">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" class="d-inline"
+                                              onsubmit="return confirm('¿Estás seguro de que deseas eliminar al instructor \'@user.Name @user.FirstLastname\'?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">No hay usuarios registrados.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Confirmación para Eliminar -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar al usuario <strong id="deleteModalBody"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form asp-page-handler="Delete" method="post">
+                    <input type="hidden" name="id" id="deleteUserId" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<!-- Sección de Scripts para la lógica del modal -->
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+
+            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+
+                const button = event.relatedTarget;
+
+                const userId = button.getAttribute('data-userid');
+                const userName = button.getAttribute('data-username');
+
+                const modalBody = confirmDeleteModal.querySelector('#deleteModalBody');
+                const deleteUserIdInput = confirmDeleteModal.querySelector('#deleteUserId');
+
+                modalBody.textContent = userName;
+                deleteUserIdInput.value = userId;
+            });
+        });
+    </script>
 }
