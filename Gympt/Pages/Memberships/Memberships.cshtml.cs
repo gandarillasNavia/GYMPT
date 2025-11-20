@@ -1,12 +1,31 @@
+using Gympt.DTO;
+using Gympt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+
 
 namespace Gympt.Pages.Memberships
 {
     public class MembershipsModel : PageModel
     {
-        public void OnGet()
+        private readonly MembershipApiService _service;
+
+        public MembershipsModel(MembershipApiService service)
         {
+            _service = service;
+        }
+
+        public List<MembershipDTO> Memberships { get; set; } = new();
+
+        public async Task OnGetAsync()
+        {
+            Memberships = await _service.GetMembershipsAsync();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            await _service.DeleteMembershipAsync(id);
+            return RedirectToPage();
         }
     }
 }

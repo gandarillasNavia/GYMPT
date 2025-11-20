@@ -7,7 +7,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddHttpClient<ClientApiService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5058"); // microservicio
-}); 
+});
+
+builder.Services.AddHttpClient<MembershipApiService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5250"); // microservicio
+});
+
 
 var app = builder.Build();
 
