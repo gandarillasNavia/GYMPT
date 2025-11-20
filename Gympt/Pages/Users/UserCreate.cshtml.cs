@@ -25,11 +25,11 @@ namespace Gympt.Pages.Users
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // ... (Toda tu lógica de validación manual se queda igual) ...
+            // ... (Toda tu lï¿½gica de validaciï¿½n manual se queda igual) ...
             if (User.Role == "Instructor")
             {
                 if (!User.HireDate.HasValue)
-                    ModelState.AddModelError("User.HireDate", "La fecha de contratación es requerida para un instructor.");
+                    ModelState.AddModelError("User.HireDate", "La fecha de contrataciï¿½n es requerida para un instructor.");
                 if (!User.MonthlySalary.HasValue || User.MonthlySalary <= 0)
                     ModelState.AddModelError("User.MonthlySalary", "El salario debe ser mayor a cero para un instructor.");
             }
@@ -44,15 +44,15 @@ namespace Gympt.Pages.Users
                 User.Password = "gympt" + User.Ci;
                 await _userApiClient.CreateUserAsync(User);
             }
-            catch (ApiException ex) // <-- AHORA ATRAPAMOS NUESTRA EXCEPCIÓN PERSONALIZADA
+            catch (ApiException ex) // <-- AHORA ATRAPAMOS NUESTRA EXCEPCIï¿½N PERSONALIZADA
             {
-                // El mensaje de la excepción AHORA SÍ es el mensaje real de la API.
+                // El mensaje de la excepciï¿½n AHORA Sï¿½ es el mensaje real de la API.
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
             catch (HttpRequestException ex) // Mantenemos un catch para errores de red
             {
-                ModelState.AddModelError(string.Empty, $"Error de conexión: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Error de conexiï¿½n: {ex.Message}");
                 return Page();
             }
 

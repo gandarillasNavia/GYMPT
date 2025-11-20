@@ -20,33 +20,33 @@ namespace GYMPT.Pages.Users
             _userApiClient = userApiClient;
         }
 
-        // Se ejecuta cuando se carga la página (GET).
+        // Se ejecuta cuando se carga la pï¿½gina (GET).
         // Su trabajo es obtener los datos del instructor y rellenar el formulario.
         public async Task<IActionResult> OnGetAsync(int id)
         {
             //Instructor = await _userApiClient.GetUserByIdAsync(id);
 
-            // Verificación de seguridad importante:
-            // 1. ¿Existe el usuario?
-            // 2. ¿Es realmente un instructor?
+            // Verificaciï¿½n de seguridad importante:
+            // 1. ï¿½Existe el usuario?
+            // 2. ï¿½Es realmente un instructor?
             if (Instructor == null || Instructor.Role != "Instructor")
             {
                 // Si no se encuentra o alguien intenta editar un Admin por la URL,
-                // lo enviamos a una página de error.
+                // lo enviamos a una pï¿½gina de error.
                 return NotFound();
             }
 
             return Page();
         }
 
-        // Se ejecuta cuando se envía el formulario (POST).
+        // Se ejecuta cuando se envï¿½a el formulario (POST).
         // Su trabajo es validar los datos y enviarlos a la API.
         public async Task<IActionResult> OnPostAsync()
         {
-            // Verifica si los datos del formulario cumplen las reglas de validación del DTO.
+            // Verifica si los datos del formulario cumplen las reglas de validaciï¿½n del DTO.
             if (!ModelState.IsValid)
             {
-                // Si no son válidos, se vuelve a mostrar la página con los mensajes de error.
+                // Si no son vï¿½lidos, se vuelve a mostrar la pï¿½gina con los mensajes de error.
                 return Page();
             }
 
@@ -57,14 +57,14 @@ namespace GYMPT.Pages.Users
             }
             catch (HttpRequestException ex)
             {
-                // Si la API devuelve un error (ej. validación del lado del servidor),
+                // Si la API devuelve un error (ej. validaciï¿½n del lado del servidor),
                 // lo mostramos como un error general en el formulario.
-                ModelState.AddModelError(string.Empty, $"Ocurrió un error al contactar la API: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Ocurriï¿½ un error al contactar la API: {ex.Message}");
                 return Page();
             }
 
-            // Si la operación es exitosa, redirigimos al usuario a la lista principal.
-            // Esto sigue el patrón Post-Redirect-Get, una práctica recomendada.
+            // Si la operaciï¿½n es exitosa, redirigimos al usuario a la lista principal.
+            // Esto sigue el patrï¿½n Post-Redirect-Get, una prï¿½ctica recomendada.
             return RedirectToPage("/Users/Users");
         }
     }

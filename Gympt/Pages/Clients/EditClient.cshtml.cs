@@ -2,6 +2,7 @@ using Gympt.DTO;
 using Gympt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 public class EditClientModel : PageModel
 {
@@ -13,30 +14,39 @@ public class EditClientModel : PageModel
     }
 
     [BindProperty]
-    public ClientDTO Client { get; set; }
+    public ClientDTO Client { get; set; } = new ClientDTO()
+    {
+        LastModifiedBy = "System",
+        LastModification = DateTime.UtcNow,
+    };
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
         Client = await _api.GetClientByIdAsync(id);
-
-        if (Client == null)
-            return RedirectToPage("/Clients/Clients");
-
+        if (Client == null) return NotFound();
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid) return Page();
+
+        // Valores de modificación por defecto
+        Client.CreatedBy ??= "System";
+        Client.CreatedAt = DateTime.UtcNow;
+
+        Client.LastModifiedBy ??= "System";
+        Client.LastModification = DateTime.UtcNow;
+
+        var result = await _api.UpdateClientAsync(Client.Id,Client);
+        if (!result.IsSuccess)
+        {
+            // Mostramos errores devueltos por el microservicio
+            ModelState.AddModelError(string.Empty, result.Error);
             return Page();
+        }
 
-        bool ok = await _api.UpdateClientAsync(Client.Id, Client);
-
-
-        if (ok)
-            return RedirectToPage("/Clients/Clients");
-
-        ModelState.AddModelError("", "No se pudo actualizar el cliente.");
-        return Page();
+        return RedirectToPage("/Clients/Clients");
     }
+
 }

@@ -22,7 +22,7 @@ namespace GYMPT.Pages.Users
 
             if (User == null)
             {
-                // Si la API no devuelve un usuario, redirigimos a una página de "No Encontrado"
+                // Si la API no devuelve un usuario, redirigimos a una pï¿½gina de "No Encontrado"
                 return NotFound();
             }
 

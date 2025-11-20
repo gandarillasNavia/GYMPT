@@ -30,7 +30,7 @@ public class ClientsModel : PageModel
         {
             TempData["Error"] = "No se pudo eliminar el cliente.";
         }
-
+            
         // Recargar la página
         return RedirectToPage();
     }

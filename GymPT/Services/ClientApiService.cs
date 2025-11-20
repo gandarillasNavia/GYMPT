@@ -1,9 +1,9 @@
-﻿ // Asegúrate de que tu ClientDTO esté en este namespace
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Gympt.DTO;
+using Gympt.Common;
 
 namespace Gympt.Services
 {
@@ -19,7 +19,6 @@ namespace Gympt.Services
         // Obtener todos los clientes
         public async Task<List<ClientDTO>> GetClientsAsync()
         {
-            // Cambié "api/client" a "api/clients" para que coincida con el microservicio
             return await _http.GetFromJsonAsync<List<ClientDTO>>("api/clients");
         }
 
@@ -30,18 +29,49 @@ namespace Gympt.Services
         }
 
         // Crear nuevo cliente
-        public async Task<ClientDTO> CreateClientAsync(ClientDTO client)
+        public async Task<Result<ClientDTO>> CreateClientAsync(ClientDTO client)
         {
+            // Asigna valores de negocio por defecto
+            client.CreatedAt = DateTime.UtcNow;
+            client.CreatedBy = "System";
+            
+            // Aquí verificamos el objeto antes de enviarlo
+            Console.WriteLine("Enviando cliente al microservicio:");
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(client));
+
             var response = await _http.PostAsJsonAsync("api/clients", client);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<ClientDTO>();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Error recibido del microservicio: " + errorMessage);
+                return Result<ClientDTO>.Failure(errorMessage);
+            }
+
+
+            var createdClient = await response.Content.ReadFromJsonAsync<ClientDTO>();
+            Console.WriteLine("Cliente creado correctamente: " + System.Text.Json.JsonSerializer.Serialize(createdClient));
+            return Result<ClientDTO>.Success(createdClient);
         }
 
+
         // Actualizar cliente existente
-        public async Task<bool> UpdateClientAsync(int id, ClientDTO client)
+        public async Task<Result<ClientDTO>> UpdateClientAsync(int id, ClientDTO client)
         {
+            // Si no se especifica quién modifica, se asigna "System" por defecto
+            client.LastModification = DateTime.UtcNow;
+            client.LastModifiedBy ??= "System";
+
             var response = await _http.PutAsJsonAsync($"api/clients/{id}", client);
-            return response.IsSuccessStatusCode;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorObj = await response.Content.ReadFromJsonAsync<ErrorDTO>();
+                return Result<ClientDTO>.Failure(errorObj?.Error ?? "Error desconocido al crear el cliente.");
+            }
+
+            var updatedClient = await response.Content.ReadFromJsonAsync<ClientDTO>();
+            return Result<ClientDTO>.Success(updatedClient);
         }
 
         // Eliminar cliente

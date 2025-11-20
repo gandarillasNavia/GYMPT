@@ -1,5 +1,6 @@
 using Gympt.DTO;
 using Gympt.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
@@ -14,31 +15,37 @@ public class CreateClientModel : PageModel
     }
 
     [BindProperty]
-    public ClientDTO Client { get; set; } = new();
-
-    public void OnGet() { }
+    public ClientDTO Client { get; set; } = new ClientDTO()
+    {
+        IsActive = true,
+        FitnessLevel = "Principiante",
+        InitialWeightKg = 0,
+        CurrentWeightKg = 0,
+        EmergencyContactPhone = "",
+        CreatedBy = "System",
+        CreatedAt = DateTime.UtcNow
+    };
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
             return Page();
 
-        try
+        // Asignamos valores por defecto antes de enviar
+        Client.CreatedBy = "System";
+        Client.CreatedAt = DateTime.UtcNow;
+
+        // Llamada al microservicio para crear el cliente
+        var result = await _api.CreateClientAsync(Client);
+
+        if (!result.IsSuccess)
         {
-            // Aquí llamamos al método correcto y pasamos la propiedad Client
-            var createdClient = await _api.CreateClientAsync(Client);
-
-            if (createdClient != null)
-                return RedirectToPage("/Clients/Clients");
-
-            ModelState.AddModelError("", "No se pudo crear el cliente.");
+            // Agregamos el error devuelto por el microservicio al ModelState
+            ModelState.AddModelError(string.Empty, result.Error);
             return Page();
         }
-        catch (Exception ex)
-        {
-            // Opcional: agregar logging si quieres
-            ModelState.AddModelError("", $"Error al crear el cliente: {ex.Message}");
-            return Page();
-        }
+
+        // Redirigir a la lista de clientes si todo fue exitoso
+        return RedirectToPage("/Clients/Clients");
     }
 }
