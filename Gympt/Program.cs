@@ -1,30 +1,27 @@
 using Gympt.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient<UserApiClient>(client =>
+
+// Configura el HttpClient para que sepa la dirección base de la API y lo inyecta en DisciplineApiClient
+var disciplineApiUrl = builder.Configuration["ApiSettings:DisciplineApiUrl"];
+builder.Services.AddHttpClient<DisciplineApiClient>(client =>
 {
-    // ¡IMPORTANTE! Usa la URL correcta de tu MicroServiceUsers (mira en su launchSettings.json)
-    client.BaseAddress = new Uri("https://localhost:7299");
+    client.BaseAddress = new Uri(disciplineApiUrl);
 });
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
-
 app.Run();

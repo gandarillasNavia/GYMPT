@@ -1,4 +1,53 @@
-﻿@page
+﻿@page "{id:int}"
 @model Gympt.Pages.Disciplines.DisciplineEditModel
 @{
+    ViewData["Title"] = "Editar Disciplina";
 }
+
+<h1>Editar Disciplina</h1>
+<h4>@Model.Discipline.Name</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campo oculto para mantener el ID de la disciplina durante el POST -->
+            <input type="hidden" asp-for="Discipline.Id" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Discipline.Name" class="control-label"></label>
+                <input asp-for="Discipline.Name" class="form-control" />
+                <span asp-validation-for="Discipline.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Discipline.Description" class="control-label"></label>
+                <textarea asp-for="Discipline.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Discipline.Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="Discipline.StartTime" class="control-label">Hora de Inicio</label>
+                        <input asp-for="Discipline.StartTime" type="time" class="form-control" />
+                        <span asp-validation-for="Discipline.StartTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="Discipline.EndTime" class="control-label">Hora de Fin</label>
+                        <input asp-for="Discipline.EndTime" type="time" class="form-control" />
+                        <span asp-validation-for="Discipline.EndTime" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+                <a asp-page="./Disciplines" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

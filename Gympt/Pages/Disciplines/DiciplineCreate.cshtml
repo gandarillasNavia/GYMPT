@@ -1,4 +1,55 @@
 ﻿@page
-@model Gympt.Pages.Disciplines.DiciplineCreateModel
+@model Gympt.Pages.Disciplines.DisciplineCreateModel
 @{
+    ViewData["Title"] = "Crear Disciplina";
+}
+
+<h1>Crear Nueva Disciplina</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="Discipline.Name" class="control-label"></label>
+                <input asp-for="Discipline.Name" class="form-control" />
+                <span asp-validation-for="Discipline.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Discipline.Description" class="control-label"></label>
+                <textarea asp-for="Discipline.Description" class="form-control"></textarea>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Discipline.InstructorId" class="control-label"></label>
+                <input asp-for="Discipline.InstructorId" type="number" class="form-control" />
+                <span asp-validation-for="Discipline.InstructorId" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="Discipline.StartTime" class="control-label">Hora de Inicio</label>
+                        <input asp-for="Discipline.StartTime" type="time" class="form-control" />
+                        <span asp-validation-for="Discipline.StartTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group mb-3">
+                        <label asp-for="Discipline.EndTime" class="control-label">Hora de Fin</label>
+                        <input asp-for="Discipline.EndTime" type="time" class="form-control" />
+                        <span asp-validation-for="Discipline.EndTime" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <a asp-page="./Disciplines" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

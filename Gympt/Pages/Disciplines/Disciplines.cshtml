@@ -1,4 +1,35 @@
 ﻿@page
 @model Gympt.Pages.Disciplines.DisciplinesModel
 @{
+    ViewData["Title"] = "Disciplinas";
 }
+
+<h1>Gestión de Disciplinas</h1>
+
+<p>
+    <a asp-page="DisciplineCreate" class="btn btn-primary">Crear Nueva Disciplina</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Horario</th>
+            <th></th> <!-- Columna para acciones -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var discipline in Model.Disciplines)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => discipline.Name)</td>
+                <td>@Html.DisplayFor(modelItem => discipline.Description)</td>
+                <td>@discipline.StartTime.ToString(@"hh\:mm") - @discipline.EndTime.ToString(@"hh\:mm")</td>
+                <td>
+                    <a asp-page="./DisciplineEdit" asp-route-id="@discipline.Id" class="btn btn-secondary btn-sm">Editar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

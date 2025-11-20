@@ -1,16 +1,14 @@
-﻿using System;
-using System.Net;
-
-namespace Gympt.Services
+﻿namespace Gympt.Services
 {
-
     public class ApiException : Exception
     {
-        public HttpStatusCode StatusCode { get; }
+        public int StatusCode { get; }
+        public string? ApiErrorContent { get; }
 
-        public ApiException(string message, HttpStatusCode statusCode) : base(message)
+        public ApiException(string message, int statusCode, string? apiErrorContent) : base(message)
         {
             StatusCode = statusCode;
+            ApiErrorContent = apiErrorContent;
         }
     }
 }
