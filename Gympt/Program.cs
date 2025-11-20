@@ -10,6 +10,11 @@ builder.Services.AddHttpClient<DisciplineApiClient>(client =>
 {
     client.BaseAddress = new Uri(disciplineApiUrl);
 });
+var membershipApiUrl = builder.Configuration["ApiSettings:MembershipApiUrl"];
+builder.Services.AddHttpClient<MembershipApiClient>(client =>
+{
+    client.BaseAddress = new Uri(membershipApiUrl);
+});
 
 var app = builder.Build();
 

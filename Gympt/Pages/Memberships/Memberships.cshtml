@@ -1,4 +1,38 @@
 ﻿@page
 @model Gympt.Pages.Memberships.MembershipsModel
 @{
+    ViewData["Title"] = "Membresías";
 }
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-page="MembershipCreate" class="btn btn-primary">Crear Nueva Membresía</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Sesiones Mensuales</th>
+            <th></th> <!-- Columna para acciones -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Memberships)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.MonthlySessions)</td>
+                <td>
+                    <a asp-page="./MembershipEdit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a> |
+                    <a asp-page="./MembershipDelete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
